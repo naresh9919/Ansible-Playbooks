@@ -1,1 +1,44 @@
+---
+- hosts: localhost
+  tasks:
+    - name: make sure that we can cannect to the machine
+      ping:
+    - name: Install Java 1.8
+      yum: name=java-1.8.0-openjdk state=present
+
+    - name: add group "tomcat"
+      group: name=tomcat
+
+    - name: add user "tomcat"
+      user: name=tomcat group=tomcat  createhome=yes
+      become: True
+
+    - name: Download Tomcat
+      get_url: url=http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.106/bin/apache-tomcat-7.0.106.tar.gz dest=/opt/
+
+    - name: Extract archive
+      unarchive: src=/opt/apache-tomcat-7.0.106.tar.gz dest=/opt/
+
+    - name: Change ownership of Tomcat installation
+      file: path=/opt/apache-tomcat-7.0.106/ owner=tomcat group=tomcat state=directory recurse=yes
+    
+    - name: Configure Tomcat users
+      template: src=tomcat-users.xml dest=/opt/apache-tocat-7.0.106/conf/
+      notify: restart tomcat
+
+    - name: Install Tomcat init script
+      copy: src=tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
+
+    - name: Start Tomcat
+      service: name=tomcat state=started enabled=yes
+
+
+
+vim tomcat-users.xml    (paste tomcat-users.xml script)
+  
+vim tomcat-initscript.sh   (paste tomcat-initscript.sh)
+
+ansible-playbook tomcat.yml --syntax-check  (check tomcat.yml status)
+
+ansible-playbook tomcat.yml      (run playbook)
 
