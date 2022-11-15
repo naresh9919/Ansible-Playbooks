@@ -9,3 +9,23 @@
           service:
             name: nginx
             state: started
+
+
+
+
+
+To run playbook
+
+# ansible-playbook -i hosts nginx-install.yml
+
+To check
+
+# ansible-playbook -i hosts nginx-install.yml --check
+
+you should add HostIP in hostfile
+
+for check nginx installed or not
+
+# yum list installed | grep nginx
+
+# ps -ef | grep nginx
