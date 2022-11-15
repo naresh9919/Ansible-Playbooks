@@ -1,14 +1,11 @@
---- 
-- 
-  become: true
-  hosts: all
-  name: "nginx install & start service"
-  tasks: 
-    - 
-      name: "install nginx"
-      state: latest
-    - 
-      name: "start nginx"
-      service: 
-        name: nginx
-        state: started
+---
+- hosts: localhost
+  vars:
+    - pkg: nginx
+      tasks:
+        - name: install packages
+          yum: name=nginx state=latest
+        - name: start nginx
+          service:
+            name: nginx
+            state: started
